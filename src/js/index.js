@@ -17,7 +17,12 @@ function App() {
         $menuName.innerText
       );
 
-      $menuName.innerText = updatedMenuName;
+      if (updatedMenuName.trim() === "") {
+        alert("메뉴 이름은 공백일 수 없습니다.");
+        return;
+      } else {
+        $menuName.innerText = updatedMenuName;
+      }
     }
   });
 
