@@ -24,6 +24,15 @@ function App() {
         $menuName.innerText = updatedMenuName;
       }
     }
+    // 메뉴의 삭제 버튼을 누르면 메뉴 삭제 컨펌(confirm)창이 뜬다.
+    if (e.target.classList.contains("menu-remove-button")) {
+      const $menuName = e.target.closest("li").querySelector(".menu-name");
+      // 삭제에서 확인을 누르면 메뉴가 삭제된다.
+      if (confirm(`"${$menuName.innerText}" 메뉴를 정말 삭제하시겠습니까?`)) {
+        e.target.closest("li").remove();
+        countMenu();
+      }
+    }
   });
 
   // form 태그가 자동으로 전송되는 것을 방지한다.
