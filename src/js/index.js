@@ -3,6 +3,24 @@ const $ = (selector) => document.querySelector(selector);
 
 // 이벤트에 관련된 기능
 function App() {
+  // 메뉴의 수정 버튼을 눌러 prompt를 통해 이름을 수정한다.
+  $("#espresso-menu-list").addEventListener("click", (e) => {
+    if (e.target.classList.contains("menu-edit-button")) {
+      // console.log(e.target);
+
+      const $menuName = e.target.closest("li").querySelector(".menu-name");
+      // 동적으로 생성된 element에 접근하는 방법 - 이벤트 위임
+      // closest : 현재 element에서 매개변수로 준 조건과 맞는 가장 가까운 부모 요소가 반환된다.
+
+      const updatedMenuName = prompt(
+        "메뉴명을 입력해서 수정해주세요.",
+        $menuName.innerText
+      );
+
+      $menuName.innerText = updatedMenuName;
+    }
+  });
+
   // form 태그가 자동으로 전송되는 것을 방지한다.
   $("#espresso-menu-form").addEventListener("submit", (e) => {
     e.preventDefault();
