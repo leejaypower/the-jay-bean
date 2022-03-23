@@ -47,6 +47,13 @@ function App() {
     }
   };
 
+  // 총 메뉴 갯수를 count하여 상단에 보여주는 함수
+  const countMenu = () => {
+    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
+    $(".menu-count").innerText = `총 ${menuCount} 개`;
+    $("#espresso-menu-name").value = "";
+  };
+
   // 메뉴의 이름을 입력받고 엔터키 입력으로 추가한다.
   $("#espresso-menu-name").addEventListener("keypress", (e) => {
     if (e.key !== "Enter") {
@@ -54,11 +61,13 @@ function App() {
       return;
     }
     addEspressoMenuName(e);
+    countMenu();
   });
 
   // 메뉴의 이름을 입력받고 확인 버튼을 눌러서 추가한다.
   $("#espresso-menu-submit-button").addEventListener("click", (e) => {
     addEspressoMenuName(e);
+    countMenu();
   });
 }
 
