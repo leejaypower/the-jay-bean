@@ -55,6 +55,11 @@ function App() {
     }
     addEspressoMenuName(e);
   });
+
+  // 메뉴의 이름을 입력받고 확인 버튼을 눌러서 추가한다.
+  $("#espresso-menu-submit-button").addEventListener("click", (e) => {
+    addEspressoMenuName(e);
+  });
 }
 
 App();
