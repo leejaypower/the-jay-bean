@@ -6,7 +6,7 @@ const store = {
     localStorage.setItem("menu", JSON.stringify(menu));
   },
   getLocalStorage() {
-    localStorage.getItem("menu");
+    return JSON.parse(localStorage.getItem("menu"));
   },
 };
 
@@ -14,6 +14,44 @@ const store = {
 function App() {
   // 상태는 변하는 데이터 : 메뉴명
   this.menu = [];
+  this.init = () => {
+    if (store.getLocalStorage().length > 0) {
+      this.menu = store.getLocalStorage();
+      paint();
+    }
+  };
+
+  const paint = () => {
+    const template = this.menu
+      .map((item, index) => {
+        // index로 해당 메뉴의 고유값을 부여한다.
+        return `<li data-menu-id="${index}">
+    <span class="menu-name">${item.name}</span>
+    <button
+      type="button"
+    >
+      품절
+    </button>
+    <button
+      type="button"
+      class="menu-edit-button"
+    >
+      수정
+    </button>
+    <button
+      type="button"
+      class="menu-remove-button"
+    >
+      삭제
+    </button>
+  </li>`;
+      })
+      // menu 배열의 모든 요소를 하나의 문자열로 만들기 위해 join 메서드 사용
+      .join("");
+
+    // console.log(menuItemTemplate(espressoMenuName));
+    $("#espresso-menu-list").innerHTML = template;
+  };
 
   // 메뉴를 추가하는 함수
   const addMenuName = () => {
@@ -26,36 +64,7 @@ function App() {
 
     this.menu.push({ name: espressoMenuName });
     store.setLocalStorage(this.menu);
-
-    const template = this.menu
-      .map((item, index) => {
-        // index로 해당 메뉴의 고유값을 부여한다.
-        return `<li data-menu-id="${index}">
-      <span class="menu-name">${item.name}</span>
-      <button
-        type="button"
-      >
-        품절
-      </button>
-      <button
-        type="button"
-        class="menu-edit-button"
-      >
-        수정
-      </button>
-      <button
-        type="button"
-        class="menu-remove-button"
-      >
-        삭제
-      </button>
-    </li>`;
-      })
-      // menu 배열의 모든 요소를 하나의 문자열로 만들기 위해 join 메서드 사용
-      .join("");
-
-    // console.log(menuItemTemplate(espressoMenuName));
-    $("#espresso-menu-list").innerHTML = template;
+    paint();
   };
 
   // 총 메뉴 갯수를 count하여 상단에 보여주는 함수
@@ -138,5 +147,8 @@ function App() {
 
 // App();
 
-const app = new App();
 // new 키워드를 사용하여 생성자 함수를 호출하게 되면 이 때의 this는 만들어질 객체를 참조한다.
+const app = new App();
+
+// 로컬 스토리지의 저장된 메뉴를 불러온다.
+app.init();
