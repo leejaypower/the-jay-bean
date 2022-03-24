@@ -93,6 +93,10 @@ function App() {
     const $menuName = e.target.closest("li").querySelector(".menu-name");
     // 삭제에서 확인을 누르면 메뉴가 삭제된다.
     if (confirm(`"${$menuName.innerText}" 메뉴를 정말 삭제하시겠습니까?`)) {
+      const menuId = e.target.closest("li").dataset.menuId;
+      // menuId는 인덱스로 아이디값을 준 것
+      this.menu.splice(menuId, 1);
+      store.setLocalStorage(this.menu);
       e.target.closest("li").remove();
       countMenu();
     }
