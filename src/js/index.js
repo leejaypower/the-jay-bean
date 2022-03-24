@@ -1,19 +1,36 @@
 const $ = (selector) => document.querySelector(selector);
 // $ 표시는 자바스크립트에서 DOM element를 가져올 때 관용적으로 많이 사용한다.
 
+const store = {
+  setLocalStorage(menu) {
+    localStorage.setItem("menu", JSON.stringify(menu));
+  },
+  getLocalStorage() {
+    localStorage.getItem("menu");
+  },
+};
+
 // 이벤트에 관련된 기능
 function App() {
+  // 상태는 변하는 데이터 : 메뉴명
+  this.menu = [];
+
   // 메뉴를 추가하는 함수
-  const addMenuName = (e) => {
+  const addMenuName = () => {
     if ($("#espresso-menu-name").value.trim() === "") {
       // 공백이나 입력하지 않고 추가하는 것 방지
       alert("메뉴 이름을 입력해주세요!");
       return;
     }
     const espressoMenuName = $("#espresso-menu-name").value;
-    const menuItemTemplate = (espressoMenuName) => {
-      return `<li>
-      <span class="menu-name">${espressoMenuName}</span>
+
+    this.menu.push({ name: espressoMenuName });
+    store.setLocalStorage(this.menu);
+
+    const template = this.menu
+      .map((item) => {
+        return `<li>
+      <span class="menu-name">${item.name}</span>
       <button
         type="button"
       >
@@ -32,12 +49,12 @@ function App() {
         삭제
       </button>
     </li>`;
-    };
+      })
+      // menu 배열의 모든 요소를 하나의 문자열로 만들기 위해 join 메서드 사용
+      .join("");
+
     // console.log(menuItemTemplate(espressoMenuName));
-    $("#espresso-menu-list").insertAdjacentHTML(
-      "beforeend",
-      menuItemTemplate(espressoMenuName)
-    );
+    $("#espresso-menu-list").innerHTML = template;
   };
 
   // 총 메뉴 갯수를 count하여 상단에 보여주는 함수
@@ -110,4 +127,7 @@ function App() {
   });
 }
 
-App();
+// App();
+
+const app = new App();
+// new 키워드를 사용하여 생성자 함수를 호출하게 되면 이 때의 this는 만들어질 객체를 참조한다.
