@@ -28,8 +28,9 @@ function App() {
     store.setLocalStorage(this.menu);
 
     const template = this.menu
-      .map((item) => {
-        return `<li>
+      .map((item, index) => {
+        // index로 해당 메뉴의 고유값을 부여한다.
+        return `<li data-menu-id="${index}">
       <span class="menu-name">${item.name}</span>
       <button
         type="button"
@@ -66,6 +67,8 @@ function App() {
 
   // 메뉴명을 수정하는 함수
   const updateMenuName = (e) => {
+    // html의 data-menu-id 속성을 JS에서 불러올 때는 대시가 빠지고 카멜표기법으로 바뀌는 것 주의
+    const menuId = e.target.closest("li").dataset.menuId;
     const $menuName = e.target.closest("li").querySelector(".menu-name");
     // 동적으로 생성된 element에 접근하는 방법 - 이벤트 위임
     // closest : 현재 element에서 매개변수로 준 조건과 맞는 가장 가까운 부모 요소가 반환된다.
@@ -79,6 +82,8 @@ function App() {
       alert("메뉴 이름은 공백일 수 없습니다.");
       return;
     } else {
+      this.menu[menuId].name = updatedMenuName;
+      store.setLocalStorage(this.menu);
       $menuName.innerText = updatedMenuName;
     }
   };
