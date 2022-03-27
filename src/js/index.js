@@ -13,16 +13,24 @@ const store = {
 // 이벤트에 관련된 기능
 function App() {
   // 상태는 변하는 데이터 : 메뉴명
-  this.menu = [];
+  this.menu = {
+    espresso: [],
+    frappuccino: [],
+    blended: [],
+    teavana: [],
+    desert: [],
+  };
+  this.currentCategory = "espresso"; // 초기 화면은 에스프레소 메뉴로 보인다.
+
   this.init = () => {
-    if (store.getLocalStorage().length > 0) {
+    if (store.getLocalStorage()) {
       this.menu = store.getLocalStorage();
       paint();
     }
   };
 
   const paint = () => {
-    const template = this.menu
+    const template = this.menu[this.currentCategory]
       .map((item, index) => {
         // index로 해당 메뉴의 고유값을 부여한다.
         return `<li data-menu-id="${index}">
@@ -62,7 +70,8 @@ function App() {
     }
     const espressoMenuName = $("#espresso-menu-name").value;
 
-    this.menu.push({ name: espressoMenuName });
+    this.menu[this.currentCategory].push({ name: espressoMenuName });
+    // 객체에서 키값으로 특정 문자열을 넣을 때는 []표시로 표현할 수 있다.
     store.setLocalStorage(this.menu);
     paint();
   };
@@ -144,6 +153,13 @@ function App() {
     countMenu();
   });
 }
+
+$("nav").addEventListener("click", (e) => {
+  if (e.target.classList.contains("menu-category")) {
+    const categoryName = e.target.dataset.categoryName;
+    console.log(categoryName);
+  }
+});
 
 // App();
 
