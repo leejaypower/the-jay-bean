@@ -19,7 +19,7 @@ function App() {
       this.menu = store.getLocalStorage();
       paint();
     }
-    this.initEventListeners();
+    initEventListeners();
   };
 
   // 메뉴를 화면에 그리는 함수
