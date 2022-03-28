@@ -1,14 +1,5 @@
-const $ = (selector) => document.querySelector(selector);
-// $ 표시는 자바스크립트에서 DOM element를 가져올 때 관용적으로 많이 사용한다.
-
-const store = {
-  setLocalStorage(menu) {
-    localStorage.setItem("menu", JSON.stringify(menu));
-  },
-  getLocalStorage() {
-    return JSON.parse(localStorage.getItem("menu"));
-  },
-};
+import { $ } from "./utils/dom.js";
+import store from "./store/index.js";
 
 // 이벤트에 관련된 기능
 function App() {
@@ -28,8 +19,10 @@ function App() {
       this.menu = store.getLocalStorage();
       paint();
     }
+    this.initEventListeners();
   };
 
+  // 메뉴를 화면에 그리는 함수
   const paint = () => {
     const template = this.menu[this.currentCategory]
       .map((item, index) => {
@@ -62,6 +55,7 @@ function App() {
       .join("");
 
     $("#menu-list").innerHTML = template;
+    countMenu();
   };
 
   // 메뉴를 추가하는 함수
@@ -85,7 +79,9 @@ function App() {
   // 총 메뉴 갯수를 count하여 상단에 보여주는 함수
   const countMenu = () => {
     const menuCount = $("#menu-list").querySelectorAll("li").length;
-    $(".menu-count").innerText = `총 ${menuCount} 개`;
+    $(".menu-count").innerText = `총 ${
+      this.menu[this.currentCategory].length
+    } 개`;
     $("#menu-name").value = "";
   };
 
@@ -108,7 +104,7 @@ function App() {
     } else {
       this.menu[this.currentCategory][menuId].name = updatedMenuName;
       store.setLocalStorage(this.menu);
-      $menuName.innerText = updatedMenuName;
+      paint();
     }
   };
 
@@ -121,8 +117,7 @@ function App() {
       // menuId는 인덱스로 아이디값을 준 것
       this.menu[this.currentCategory].splice(menuId, 1);
       store.setLocalStorage(this.menu);
-      e.target.closest("li").remove();
-      countMenu();
+      paint();
     }
   };
 
@@ -149,57 +144,58 @@ function App() {
     paint();
   };
 
-  $("#menu-list").addEventListener("click", (e) => {
-    // 메뉴의 수정 버튼을 눌러 prompt를 통해 이름을 수정한다.
-    if (e.target.classList.contains("menu-edit-button")) {
-      updateMenuName(e);
-      return;
-      // if문이 여러개이기 때문에 마지막에 return을 붙여 불필요한 연산을 하지 않게 한다.
-    }
+  // 이벤트 함수들 분리
+  const initEventListeners = () => {
+    $("#menu-list").addEventListener("click", (e) => {
+      // 메뉴의 수정 버튼을 눌러 prompt를 통해 이름을 수정한다.
+      if (e.target.classList.contains("menu-edit-button")) {
+        updateMenuName(e);
+        return;
+        // if문이 여러개이기 때문에 마지막에 return을 붙여 불필요한 연산을 하지 않게 한다.
+      }
 
-    // 메뉴의 삭제 버튼을 누르면 메뉴 삭제 컨펌(confirm)창이 뜬다.
-    if (e.target.classList.contains("menu-remove-button")) {
-      removeMenuItem(e);
-      return;
-    }
+      // 메뉴의 삭제 버튼을 누르면 메뉴 삭제 컨펌(confirm)창이 뜬다.
+      if (e.target.classList.contains("menu-remove-button")) {
+        removeMenuItem(e);
+        return;
+      }
 
-    if (e.target.classList.contains("sold-out-button")) {
-      soldOutMenu(e);
-      return;
-    }
-  });
+      if (e.target.classList.contains("sold-out-button")) {
+        soldOutMenu(e);
+        return;
+      }
+    });
 
-  // form 태그가 자동으로 전송되는 것을 방지한다.
-  $("#menu-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-  });
+    // form 태그가 자동으로 전송되는 것을 방지한다.
+    $("#menu-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+    });
 
-  // 메뉴의 이름을 입력받고 엔터키 입력으로 추가한다.
-  $("#menu-name").addEventListener("keypress", (e) => {
-    if (e.key !== "Enter") {
-      // 값을 입력하려고 키를 눌렀을 때 value값을 인식해 alert가 뜨는 것을 방지
-      return;
-    }
-    addMenuName();
-    countMenu();
-  });
+    // 메뉴의 이름을 입력받고 엔터키 입력으로 추가한다.
+    $("#menu-name").addEventListener("keypress", (e) => {
+      if (e.key !== "Enter") {
+        // 값을 입력하려고 키를 눌렀을 때 value값을 인식해 alert가 뜨는 것을 방지
+        return;
+      }
+      addMenuName();
+    });
 
-  // 메뉴의 이름을 입력받고 확인 버튼을 눌러서 추가한다.
-  $("#menu-submit-button").addEventListener("click", () => {
-    addMenuName();
-    countMenu();
-  });
+    // 메뉴의 이름을 입력받고 확인 버튼을 눌러서 추가한다.
+    $("#menu-submit-button").addEventListener("click", () => {
+      addMenuName();
+    });
 
-  // 카테고리 변경한다.
-  $("nav").addEventListener("click", (e) => {
-    const isCategoryButton = e.target.classList.contains("menu-category");
-    if (isCategoryButton) {
-      const categoryName = e.target.dataset.categoryName;
-      this.currentCategory = categoryName;
-      $("#category-title").innerText = `${e.target.innerText} 메뉴 관리`;
-      paint();
-    }
-  });
+    // 카테고리 변경한다.
+    $("nav").addEventListener("click", (e) => {
+      const isCategoryButton = e.target.classList.contains("menu-category");
+      if (isCategoryButton) {
+        const categoryName = e.target.dataset.categoryName;
+        this.currentCategory = categoryName;
+        $("#category-title").innerText = `${e.target.innerText} 메뉴 관리`;
+        paint();
+      }
+    });
+  };
 }
 
 // App();
