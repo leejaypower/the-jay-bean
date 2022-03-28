@@ -33,30 +33,26 @@
         </nav>
       </header>
       <main>
-        <h2>☕ 에스프레소 메뉴 관리</h2>
+        <h2 id="category-title">☕ 에스프레소 메뉴 관리</h2>
         <span class="menu-count">총 0개</span>
-        <form id="espresso-menu-form">
+        <form id="menu-form">
           <div>
-            <label for="espresso-menu-name" class="input-label" hidden>
+            <label for="menu-name" class="input-label" hidden>
               에스프레소 메뉴 이름
             </label>
             <input
               type="text"
-              id="espresso-menu-name"
-              name="espressoMenuName"
+              id="menu-name"
+              name="menuName"
               placeholder="에스프레소 메뉴 이름"
               autocomplete="off"
             />
-            <button
-              type="button"
-              name="submit"
-              id="espresso-menu-submit-button"
-            >
+            <button type="button" name="submit" id="menu-submit-button">
               확인
             </button>
           </div>
         </form>
-        <ul id="espresso-menu-list"></ul>
+        <ul id="menu-list"></ul>
       </main>
     </div>
     <script type="module" src="./src/js/index.js"></script>
