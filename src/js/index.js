@@ -1,6 +1,8 @@
 import { $ } from "./utils/dom.js";
 import store from "./store/index.js";
 
+const BASE_URL = "http://localhost:3000/api";
+
 // 이벤트에 관련된 기능
 function App() {
   // 상태는 변하는 데이터 : 메뉴명
@@ -59,7 +61,7 @@ function App() {
   };
 
   // 메뉴를 추가하는 함수
-  const addMenuName = () => {
+  const addMenuName = async () => {
     if ($("#menu-name").value.trim() === "") {
       // 공백이나 입력하지 않고 추가하는 것 방지
       alert("메뉴 이름을 입력해주세요!");
@@ -67,13 +69,27 @@ function App() {
     }
     const menuName = $("#menu-name").value;
 
-    this.menu[this.currentCategory].push({ name: menuName });
-    // 객체에서 키값으로 특정 문자열을 넣을 때는 []표시로 표현할 수 있다.
-    // 여기서 객체의 키값은 실시간으로 정해진다.
+    // this.menu[this.currentCategory].push({ name: menuName });
+    // store.setLocalStorage(this.menu);
 
-    store.setLocalStorage(this.menu);
+    await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: menuName }),
+    }).then((response) => {
+      return response.json();
+    });
 
-    paint();
+    await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        this.menu[this.currentCategory] = data;
+        paint();
+      });
   };
 
   // 총 메뉴 갯수를 count하여 상단에 보여주는 함수
