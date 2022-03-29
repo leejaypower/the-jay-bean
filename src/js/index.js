@@ -3,6 +3,17 @@ import store from "./store/index.js";
 
 const BASE_URL = "http://localhost:3000/api";
 
+const MenuApi = {
+  async getAllMenuByCategory(category) {
+    // 카테고리별 메뉴를 불러온다.
+    const response = await fetch(`${BASE_URL}/category/${category}/menu`);
+    return response.json();
+    // fetch에서 then으로 chaining 할 경우 return 값을 then 안에서만 받을 수 있다.
+    // fetch로 받아온 data를 함수의 return값으로 받아오기 위해 위처럼 표현한다.
+    // 이 방법으로 then을 쓰지 않고도 response 객체를 받아올 수 있다.
+  },
+};
+
 // 이벤트에 관련된 기능
 function App() {
   // 상태는 변하는 데이터 : 메뉴명
@@ -15,12 +26,12 @@ function App() {
   };
   this.currentCategory = "espresso"; // 초기 화면은 에스프레소 메뉴로 보인다.
 
-  // 로컬 스토리지에 메뉴 데이터가 있으면 불러와서 화면에 그린다.
-  this.init = () => {
-    if (store.getLocalStorage()) {
-      this.menu = store.getLocalStorage();
-      paint();
-    }
+  // 서버에 메뉴 데이터가 있으면 불러와서 화면에 그린다.
+  this.init = async () => {
+    this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+      this.currentCategory
+    );
+    paint();
     initEventListeners();
   };
 
@@ -82,14 +93,10 @@ function App() {
       return response.json();
     });
 
-    await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        this.menu[this.currentCategory] = data;
-        paint();
-      });
+    this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+      this.currentCategory
+    );
+    paint();
   };
 
   // 총 메뉴 갯수를 count하여 상단에 보여주는 함수
