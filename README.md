@@ -82,11 +82,11 @@
 
 ## 🚩 요구사항 3 - 서버와의 통신을 통해 메뉴 관리하기
 
-- [ ] 웹 서버를 띄운다.
+- [x] <a href="https://github.com/blackcoffee-study/moonbucks-menu">웹 서버</a>를 띄운다.
 
-- [ ] 서버에 새로운 메뉴를 추가될 수 있도록 요청한다.
+- [x] 서버에 새로운 메뉴가 추가될 수 있도록 요청한다.
 
-- [ ] 서버로부터 카테고리별 메뉴 리스트를 받아온다.
+- [x] 서버로부터 카테고리별 메뉴 리스트를 받아온다.
 
 - [ ] 서버에 메뉴 이름을 수정 요청한다.
 
@@ -95,17 +95,111 @@
 - [ ] 서버에 저장된 메뉴를 삭제 요청한다.
 
 - [ ] fetch 비동기 api를 사용하는 부분을 async await를 사용하여 구현한다.
+
 - [ ] api 통신이 실패하는 경우 사용자가 알 수 있게 alert로 예외처리를 한다.
 
 - [ ] 중복되는 메뉴는 추가할 수 없다.
 
 <br>
 
-## 새로 알게 된 것
+## 👽 API
+
+<a href="https://github.com/blackcoffee-study/moonbucks-menu">링크</a>에 있는 웹 서버 저장소를 clone하여 로컬에서 웹 서버를 실행시킵니다.
+
+###
+
+### baseUrl
+
+`http://localhost:3000`
+
+<br>
+
+### 메뉴 생성하기
+
+| method | uri                          |
+| ------ | ---------------------------- |
+| POST   | /api/category/:category/menu |
+
+```javascript
+{
+ requestBody: {
+   "name": "string"
+ },
+ response: {
+   "id": "string",
+   "name": "string",
+   "isSoldOut": Boolean
+  }
+}
+```
+
+### 카테고리별 메뉴리스트 불러오기
+
+| method | uri                          |
+| ------ | ---------------------------- |
+| GET    | /api/category/:category/menu |
+
+```javascript
+{
+  response: [
+    {
+      id: "string",
+      name: "string",
+      isSoldOut: Boolean,
+    },
+  ];
+}
+```
+
+### 메뉴 이름 수정하기
+
+| method | uri                                  |
+| ------ | ------------------------------------ |
+| PUT    | /api/category/:category/menu/:menuId |
+
+```javascript
+{
+ response: {
+   "id": "string",
+   "name": "string",
+   "isSoldOut": Boolean
+  }
+}
+```
+
+### 메뉴 품절 처리하기
+
+| method | uri                                          |
+| ------ | -------------------------------------------- |
+| PUT    | /api/category/:category/menu/:menuId/soldout |
+
+```javascript
+{
+ response: {
+   "id": "string",
+   "name": "string",
+   "isSoldOut": Boolean
+  }
+}
+```
+
+### 메뉴 삭제하기
+
+| method | uri                                  |
+| ------ | ------------------------------------ |
+| DELETE | /api/category/:category/menu/:menuId |
+
+```javascript
+응답 데이터 없음
+```
+
+<br>
+
+## 🍪 새로 알게 된 것
 
 - script type="module"
 
-- DOM element를 가져올 때 변수로 만들어 간편하게 가져오고, 코드의 길이를 줄일 수 있다.
+- DOM element를 가져올 때 변수로 만들어 간편하게 가져오는 방법
 
 - 새롭게 알게 된 메서드들
 
@@ -126,6 +220,10 @@
 
 - 자바스크립트에서 동적으로 엘리먼트를 생성할 때, 조건에 따라 클래스나 텍스트를 바꾸기 위해 삼항연산자를 사용하는 방법
 
+- <a href="https://developer.mozilla.org/ko/docs/Learn/HTML/Howto/Use_data_attributes">HTML data- 속성, dataset으로 접근</a>
+
 - runtime에서 정해지는 객체의 키값을 가져오는 방법 실습 (computed properties)
 
-- <a href="https://developer.mozilla.org/ko/docs/Learn/HTML/Howto/Use_data_attributes">HTML data- 속성, dataset으로 접근</a>
+- 자바스크립트 싱글스레드의 이해
+
+- fetch api
