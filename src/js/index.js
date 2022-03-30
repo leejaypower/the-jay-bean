@@ -41,6 +41,17 @@ const MenuApi = {
     }
     return response.json();
   },
+  async toggleSoldOutMenu(category, menuId) {
+    const response = await fetch(
+      `${BASE_URL}/category/${category}/menu/${menuId}/soldout`,
+      {
+        method: "PUT",
+      }
+    );
+    if (!response.ok) {
+      console.error("에러가 발생했습니다!");
+    }
+  },
 };
 
 // 이벤트에 관련된 기능
@@ -69,7 +80,7 @@ function App() {
     const template = this.menu[this.currentCategory]
       .map((item) => {
         return `<li data-menu-id="${item.id}" >
-    <span class="menu-name ${item.soldOut ? "sold-out" : ""}">${
+    <span class="menu-name ${item.isSoldOut ? "sold-out" : ""}">${
           item.name
         }</span>
     <button
@@ -164,25 +175,12 @@ function App() {
   };
 
   // 품절 상태 함수
-  const soldOutMenu = (e) => {
+  const soldOutMenu = async (e) => {
     const menuId = e.target.closest("li").dataset.menuId;
-    const $soldOutButton = e.target
-      .closest("li")
-      .querySelector(".sold-out-button");
-
-    // console.log($soldOutButton.innerText);
-
-    // soldOut이라는 property를 이런 방법으로 추가할 수도 있다. 자바스크립트의 유연함..
-    this.menu[this.currentCategory][menuId].soldOut =
-      !this.menu[this.currentCategory][menuId].soldOut;
-    // boolean 으로 toggle 기능처럼 만들 수 있다.
-    // 처음에는 undefined라 false -> false인 상태에서 누르면 !가 붙어서 true가 되고 이후 참거짓을 반복한다.
-
-    // 품절버튼 내용 바꾸기
-    this.menu[this.currentCategory][menuId].soldOutText =
-      !this.menu[this.currentCategory][menuId].soldOutText;
-
-    store.setLocalStorage(this.menu);
+    await MenuApi.toggleSoldOutMenu(this.currentCategory, menuId);
+    this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+      this.currentCategory
+    );
     paint();
   };
 
