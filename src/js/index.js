@@ -25,6 +25,22 @@ const MenuApi = {
       console.error("에러가 발생했습니다!");
     }
   },
+  async updateMenu(category, name, menuId) {
+    const response = await fetch(
+      `${BASE_URL}/category/${category}/menu/${menuId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      }
+    );
+    if (!response.ok) {
+      console.error("에러가 발생했습니다!");
+    }
+    return response.json();
+  },
 };
 
 // 이벤트에 관련된 기능
@@ -51,9 +67,8 @@ function App() {
   // 메뉴를 화면에 그리는 함수
   const paint = () => {
     const template = this.menu[this.currentCategory]
-      .map((item, index) => {
-        // index로 해당 메뉴의 고유값을 부여한다.
-        return `<li data-menu-id="${index}" >
+      .map((item) => {
+        return `<li data-menu-id="${item.id}" >
     <span class="menu-name ${item.soldOut ? "sold-out" : ""}">${
           item.name
         }</span>
@@ -111,7 +126,7 @@ function App() {
   };
 
   // 메뉴명을 수정하는 함수
-  const updateMenuName = (e) => {
+  const updateMenuName = async (e) => {
     // html의 data-menu-id 속성을 JS에서 불러올 때는 대시가 빠지고 카멜표기법으로 바뀌는 것 주의
     const menuId = e.target.closest("li").dataset.menuId;
     const $menuName = e.target.closest("li").querySelector(".menu-name");
@@ -127,8 +142,10 @@ function App() {
       alert("메뉴 이름은 공백일 수 없습니다.");
       return;
     } else {
-      this.menu[this.currentCategory][menuId].name = updatedMenuName;
-      store.setLocalStorage(this.menu);
+      await MenuApi.updateMenu(this.currentCategory, updatedMenuName, menuId);
+      this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+        this.currentCategory
+      );
       paint();
     }
   };
