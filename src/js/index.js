@@ -12,6 +12,19 @@ const MenuApi = {
     // fetch로 받아온 data를 함수의 return값으로 받아오기 위해 위처럼 표현한다.
     // 이 방법으로 then을 쓰지 않고도 response 객체를 받아올 수 있다.
   },
+  async createMenu(category, name) {
+    const response = await fetch(`${BASE_URL}/category/${category}/menu`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name }),
+    });
+    if (!response.ok) {
+      // console.error(response);
+      console.error("에러가 발생했습니다!");
+    }
+  },
 };
 
 // 이벤트에 관련된 기능
@@ -80,18 +93,7 @@ function App() {
     }
     const menuName = $("#menu-name").value;
 
-    // this.menu[this.currentCategory].push({ name: menuName });
-    // store.setLocalStorage(this.menu);
-
-    await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: menuName }),
-    }).then((response) => {
-      return response.json();
-    });
+    await MenuApi.createMenu(this.currentCategory, menuName);
 
     this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
       this.currentCategory
