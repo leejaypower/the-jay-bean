@@ -59,11 +59,23 @@ function App() {
 
   // 메뉴를 추가하는 함수
   const addMenuName = async () => {
+    // 공백이나 입력하지 않고 추가하는 것 방지
     if ($("#menu-name").value.trim() === "") {
-      // 공백이나 입력하지 않고 추가하는 것 방지
       alert("메뉴 이름을 입력해주세요!");
       return;
     }
+
+    // 중복 메뉴 추가 방지
+    const duplicatedItem = this.menu[this.currentCategory].find(
+      (item) => item.name === $("#menu-name").value
+    );
+
+    if (duplicatedItem) {
+      alert("이미 등록된 메뉴입니다!");
+      $("#menu-name").value = "";
+      return;
+    }
+
     const menuName = $("#menu-name").value;
     await MenuApi.createMenu(this.currentCategory, menuName);
     paint();
