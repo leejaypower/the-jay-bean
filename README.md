@@ -88,17 +88,17 @@
 
 - [x] 서버로부터 카테고리별 메뉴 리스트를 받아온다.
 
-- [ ] 서버에 메뉴 이름을 수정 요청한다.
+- [x] 서버에 메뉴 이름을 수정 요청한다.
 
-- [ ] 서버에 메뉴 품절 상태가 toggle 되도록 요청한다.
+- [x] 서버에 메뉴 품절 상태가 toggle 되도록 요청한다.
 
-- [ ] 서버에 저장된 메뉴를 삭제 요청한다.
+- [x] 서버에 저장된 메뉴를 삭제 요청한다.
 
-- [ ] fetch 비동기 api를 사용하는 부분을 async await를 사용하여 구현한다.
+- [x] fetch 비동기 api를 사용하는 부분을 async await를 사용하여 구현한다.
 
-- [ ] api 통신이 실패하는 경우 사용자가 알 수 있게 alert로 예외처리를 한다.
+- [x] api 통신이 실패하는 경우 사용자가 알 수 있게 alert로 예외처리를 한다.
 
-- [ ] 중복되는 메뉴는 추가할 수 없다.
+- [x] 중복되는 메뉴는 추가할 수 없다.
 
 <br>
 
@@ -106,7 +106,24 @@
 
 <a href="https://github.com/blackcoffee-study/moonbucks-menu">링크</a>에 있는 웹 서버 저장소를 clone하여 로컬에서 웹 서버를 실행시킵니다.
 
-###
+<b>\* 개인적으로 API 수정한 부분이 있습니다.</b>
+
+- 품절 버튼을 누르면 입고 버튼으로 텍스트가 바뀌게끔 하기 위해 서버의 <i> menu/menuItem.js</i> 에 soldOutText property를 추가했습니다.
+- <i>store/index.js</i> 의 _togglesoldOutMenuItem_ 함수 코드에 마지막 두줄을 추가했습니다.
+
+  ```javascript
+  this.toggleSoldOutMenuItem = (category, menuId) => {
+    const index = this.menuBoard[category].findIndex(
+      (item) => item.id === menuId
+    );
+    if (this.menuBoard[category][index]) {
+      this.menuBoard[category][index].isSoldOut =
+        !this.menuBoard[category][index].isSoldOut;
+
+      this.menuBoard[category][index].soldOutText =
+        !this.menuBoard[category][index].soldOutText;
+    }
+  ```
 
 ### baseUrl
 
@@ -227,3 +244,5 @@
 - 자바스크립트 싱글스레드의 이해
 
 - fetch api
+
+- 실행의 순서를 보장하는 async await 실습
